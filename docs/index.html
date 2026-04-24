@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Actions Visual Guide</title>
+    <title>GitHub Actions Visual Guide - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #43e97b;
+            --info: #4facfe;
+            --warning: #f5576c;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --code-bg: #011627;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,134 +26,251 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--dark);
+            color: #f1f5f9;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 6px;
+            background: linear-gradient(to right, var(--success), var(--info), var(--primary));
+            width: 0%;
+            z-index: 2000;
+            transition: width 0.2s ease;
+        }
+
+        /* Layout */
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+        }
+
+        .hero-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px var(--primary));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
         h1 {
-            text-align: center;
-            color: white;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
         }
 
         .subtitle {
-            text-align: center;
-            color: #f0f0f0;
+            font-size: 1.5rem;
+            color: #94a3b8;
+            max-width: 800px;
             margin-bottom: 40px;
-            font-size: 1.1em;
         }
 
-        .section {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            animation: slideIn 0.6s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        /* Color coded boxes */
-        .concept-box {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        /* Call to Action */
+        .cta-container {
+            display: flex;
             gap: 20px;
-            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .concept {
-            padding: 20px;
-            border-radius: 10px;
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            transition: transform 0.3s ease;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
-        .concept:hover {
-            transform: translateY(-5px);
+        .btn-primary:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
         }
 
-        .concept h3 {
-            margin-bottom: 10px;
-            font-size: 1.3em;
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 45px;
+            background: transparent;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
 
-        /* Color scheme */
-        .trigger {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: white;
         }
 
-        .job {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        /* Section Styling */
+        .guide-section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+            margin-bottom: 100px;
+            padding: 60px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
         }
 
-        .step {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        .guide-section.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .runner {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: var(--info);
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        .action {
-            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        /* Concept Grid */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
         }
 
-        .secret {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        .concept-card {
+            padding: 30px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
         }
 
-        /* Flow diagram */
-        .flow-diagram {
+        .concept-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .concept-card i {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .concept-card h3 {
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .comp-card {
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comp-card.wrong { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
+        .comp-card.correct { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2); }
+
+        /* Interactive Terminal */
+        .terminal-box {
+            background: #000;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            font-family: 'Fira Code', monospace;
+            border: 4px solid #334155;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .terminal-header {
+            color: #43e97b;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .terminal-content {
+            height: 250px;
+            overflow-y: auto;
+            color: #fff;
+            font-size: 0.95rem;
+            white-space: pre-line;
+        }
+
+        /* Flow Diagram */
+        .flow-line {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
-        .flow-step {
+        .flow-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 5px solid #667eea;
+            gap: 20px;
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
         }
 
-        .flow-number {
-            background: #667eea;
-            color: white;
-            width: 40px;
-            height: 40px;
+        .flow-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(10px);
+        }
+
+        .flow-num {
+            background: var(--primary);
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -149,645 +279,240 @@
             flex-shrink: 0;
         }
 
-        .flow-content {
-            flex: 1;
-        }
-
-        .flow-content strong {
-            color: #667eea;
-        }
-
-        /* Code blocks */
-        .code-block {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            margin: 15px 0;
-            border-left: 4px solid #00f2fe;
-        }
-
-        .code-block.example {
-            border-left-color: #43e97b;
-        }
-
-        .code-block.warning {
-            border-left-color: #f5576c;
-        }
-
-        /* Comparison boxes */
-        .comparison {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .comparison-item {
+        /* Utility */
+        .highlight-box {
+            background: rgba(255, 193, 7, 0.1);
             padding: 20px;
+            border-left: 4px solid #ffc107;
             border-radius: 10px;
+            margin: 25px 0;
         }
 
-        .wrong {
-            background: #ffe5e5;
-            border: 2px solid #f5576c;
-        }
-
-        .correct {
-            background: #e5f5e5;
-            border: 2px solid #43e97b;
-        }
-
-        .comparison-item h4 {
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-
-        .wrong h4 {
-            color: #f5576c;
-        }
-
-        .correct h4 {
-            color: #43e97b;
-        }
-
-        /* Interactive demo */
-        .interactive {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background 0.3s ease;
-            margin: 5px;
-        }
-
-        button:hover {
-            background: #764ba2;
-        }
-
-        .demo-output {
-            background: #1e1e1e;
-            color: #00f2fe;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-family: monospace;
-            min-height: 100px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        /* Emoji and icons */
-        .emoji {
-            font-size: 1.5em;
-            margin-right: 8px;
-        }
-
-        /* Checklist */
-        .checklist {
-            list-style: none;
-            margin-top: 15px;
-        }
-
-        .checklist li {
-            padding: 10px;
-            margin: 8px 0;
-            background: #f8f9fa;
-            border-radius: 6px;
-            border-left: 4px solid #667eea;
-        }
-
-        .checklist input[type="checkbox"] {
-            margin-right: 10px;
-            cursor: pointer;
-            width: 18px;
-            height: 18px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .comparison {
-                grid-template-columns: 1fr;
-            }
-
-            .concept-box {
-                grid-template-columns: 1fr;
-            }
-
-            .section {
-                padding: 20px;
-            }
-        }
-
-        /* Footer */
         footer {
             text-align: center;
-            color: white;
-            padding: 20px;
-            margin-top: 40px;
+            padding: 80px 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+            color: #64748b;
         }
 
-        .badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin: 5px;
-            color: white;
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
 
-        /* Highlight important */
-        .highlight {
-            background: #fff3cd;
-            padding: 15px;
-            border-left: 4px solid #ffc107;
-            border-radius: 4px;
-            margin: 15px 0;
-        }
-
-        .highlight strong {
-            color: #ff6b6b;
+        @media (max-width: 768px) {
+            .guide-section { padding: 30px 20px; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2.2rem; }
         }
     </style>
 </head>
-
 <body>
+    <div class="progress-bar" id="progressBar"></div>
+
     <div class="container">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <a href="beginner-guide.html" style="display: inline-block; background: #4facfe; color: white; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4); transition: transform 0.3s ease;">
-                🚀 NEW: Try the Interactive Beginner's Guide!
-            </a>
-        </div>
-        <h1>🚀 GitHub Actions Visual Guide</h1>
-        <p class="subtitle">Understanding CI/CD for Beginners (Grade 8-9 Level)</p>
+        <!-- Hero Section -->
+        <header>
+            <div class="hero-icon">🛠️</div>
+            <h1>Automation Masterclass</h1>
+            <p class="subtitle">Deploy your apps with confidence using GitHub Actions. No more manual work, no more headaches.</p>
+            
+            <div class="cta-container">
+                <a href="beginner-guide.html" class="btn-primary">
+                    🚀 Start Interactive Guide
+                </a>
+                <a href="#overview" class="btn-outline">
+                    Explore Concepts
+                </a>
+            </div>
+        </header>
 
-        <!-- Section 1: What is GitHub Actions -->
-        <div class="section">
-            <h2><span class="emoji">🤔</span>What is GitHub Actions?</h2>
-            <p>Imagine you have homework:</p>
-
-            <div class="comparison">
-                <div class="comparison-item wrong">
-                    <h4><span class="emoji">❌</span>Without Automation</h4>
-                    <ol>
-                        <li>Write code</li>
-                        <li>Test manually ⏱️</li>
-                        <li>Check for errors ⏱️</li>
-                        <li>Compile ⏱️</li>
-                        <li>Upload ⏱️</li>
-                        <li>Hope it works 😰</li>
-                    </ol>
+        <!-- Overview Section -->
+        <section class="guide-section" id="overview">
+            <h2><i class="fas fa-compass"></i> Why GitHub Actions?</h2>
+            <p>Traditional deployment is slow, error-prone, and stressful. GitHub Actions turns your code repository into a powerful, automated factory.</p>
+            
+            <div class="comparison-grid">
+                <div class="comp-card wrong">
+                    <h4 style="color: var(--warning);"><i class="fas fa-user-xmark"></i> Old Way</h4>
+                    <p style="font-size: 0.95rem;">You manually test, build, and SSH into servers. One mistake can take your site down for hours.</p>
                 </div>
-                <div class="comparison-item correct">
-                    <h4><span class="emoji">✅</span>With GitHub Actions</h4>
-                    <ol>
-                        <li>Write code</li>
-                        <li>Push to GitHub</li>
-                        <li><strong>Everything else is AUTOMATIC!</strong> 🤖</li>
-                        <li>Watch it work ✨</li>
-                    </ol>
+                <div class="comp-card correct">
+                    <h4 style="color: var(--success);"><i class="fas fa-robot"></i> Actions Way</h4>
+                    <p style="font-size: 0.95rem;">GitHub robots handle everything. Push code, watch tests pass, and see your site update instantly.</p>
                 </div>
             </div>
 
-            <div class="highlight">
-                <strong>Think of it like:</strong> An automated factory assembly line that tests, builds, and deploys
-                your code automatically!
+            <div class="highlight-box">
+                <i class="fas fa-quote-left" style="color: #ffc107; margin-bottom: 10px; display: block;"></i>
+                <strong>Key Insight:</strong> Think of it as an automated factory assembly line that never sleeps and never misses a step.
             </div>
-        </div>
+        </section>
 
-        <!-- Section 2: Core Concepts -->
-        <div class="section">
-            <h2><span class="emoji">🧠</span>6 Core Concepts</h2>
+        <!-- Concept Preview -->
+        <section class="guide-section">
+            <h2><i class="fas fa-cubes"></i> The 6 Core Pillars</h2>
+            <p>Every automation workflow is built on these six fundamental building blocks.</p>
 
-            <div class="concept-box">
-                <div class="concept trigger">
-                    <h3>1️⃣ Trigger</h3>
-                    <p><strong>What starts it?</strong></p>
-                    <p>A button that starts the whole process when something happens (like pushing code).</p>
-                    <div class="code-block example">
-                        on:
-                        push:
-                        branches: [main]
-                    </div>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>1. Trigger</h3>
+                    <p>The event that starts it all, like a code push or pull request.</p>
                 </div>
-
-                <div class="concept job">
-                    <h3>2️⃣ Job</h3>
-                    <p><strong>What gets done?</strong></p>
-                    <p>A checklist of tasks that must be completed (like making breakfast).</p>
-                    <div class="code-block example">
-                        jobs:
-                        build:
-                        steps: [...]
-                    </div>
+                <div class="concept-card">
+                    <i class="fas fa-list-check"></i>
+                    <h3>2. Job</h3>
+                    <p>A group of tasks that run together on a single runner.</p>
                 </div>
-
-                <div class="concept step">
-                    <h3>3️⃣ Step</h3>
-                    <p><strong>Individual action?</strong></p>
-                    <p>One small task within a job (like "boil water" in breakfast).</p>
-                    <div class="code-block example">
-                        - run: npm install
-                        - run: npm build
-                    </div>
+                <div class="concept-card">
+                    <i class="fas fa-shoe-prints"></i>
+                    <h3>3. Step</h3>
+                    <p>Individual tasks like installing dependencies or running a build script.</p>
                 </div>
-
-                <div class="concept runner">
-                    <h3>4️⃣ Runner</h3>
-                    <p><strong>Who does the work?</strong></p>
-                    <p>A temporary computer GitHub gives you to run your tasks.</p>
-                    <div class="code-block example">
-                        runs-on: ubuntu-latest
-                    </div>
+                <div class="concept-card">
+                    <i class="fas fa-server"></i>
+                    <h3>4. Runner</h3>
+                    <p>The temporary server in the cloud that executes your automation.</p>
                 </div>
-
-                <div class="concept action">
-                    <h3>5️⃣ Action</h3>
-                    <p><strong>Pre-made recipe?</strong></p>
-                    <p>Code someone else wrote for common tasks (don't reinvent the wheel!).</p>
-                    <div class="code-block example">
-                        uses: actions/checkout@v4
-                        uses: actions/setup-node@v4
-                    </div>
+                <div class="concept-card">
+                    <i class="fas fa-mortar-pestle"></i>
+                    <h3>5. Action</h3>
+                    <p>Reusable "recipes" that simplify complex tasks for you.</p>
                 </div>
-
-                <div class="concept secret">
-                    <h3>6️⃣ Secret</h3>
-                    <p><strong>Hide passwords?</strong></p>
-                    <p>Safe place to store sensitive info (database passwords, API keys).</p>
-                    <div class="code-block example">
-                        env:
-                        DB_PASS: ${{ secrets.PASSWORD }}
-                    </div>
+                <div class="concept-card">
+                    <i class="fas fa-key"></i>
+                    <h3>6. Secret</h3>
+                    <p>Safe storage for your API keys and server passwords.</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Section 3: The Flow -->
-        <div class="section">
-            <h2><span class="emoji">🔄</span>What Happens When You Push Code?</h2>
+        <!-- Flow Visualizer -->
+        <section class="guide-section">
+            <h2><i class="fas fa-route"></i> The Deployment Journey</h2>
+            <p>What happens behind the scenes from your terminal to the production server?</p>
 
-            <div class="flow-diagram">
-                <div class="flow-step">
-                    <div class="flow-number">1</div>
-                    <div class="flow-content">
-                        <strong>You push code to GitHub</strong>
-                        <p>$ git push origin main</p>
-                    </div>
+            <div class="flow-line">
+                <div class="flow-item"><div class="flow-num">1</div><span>You push code to the <strong>main</strong> branch</span></div>
+                <div class="flow-item"><div class="flow-num">2</div><span>GitHub detects the trigger and spawns a <strong>Runner</strong></span></div>
+                <div class="flow-item"><div class="flow-num">3</div><span>The <strong>Build Job</strong> starts and compiles your code</span></div>
+                <div class="flow-item"><div class="flow-num">4</div><span>A secure <strong>SSH tunnel</strong> opens to your EC2 server</span></div>
+                <div class="flow-item"><div class="flow-num">5</div><span>Your server pulls code and restarts via <strong>PM2</strong></span></div>
+                <div class="flow-item" style="border-left-color: var(--success);"><div class="flow-num" style="background: var(--success);">6</div><span><strong>SUCCESS!</strong> Your app is live and updated.</span></div>
+            </div>
+        </section>
+
+        <!-- Live Demo Simulation -->
+        <section class="guide-section">
+            <h2><i class="fas fa-gamepad"></i> Simulator</h2>
+            <p>Experience the feedback loop of a real GitHub Actions deployment.</p>
+
+            <div class="terminal-box">
+                <div class="terminal-header">
+                    <span>deploy-pipeline.log</span>
+                    <span>Status: Ready</span>
                 </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">2</div>
-                    <div class="flow-content">
-                        <strong>GitHub detects trigger</strong>
-                        <p>New code on main branch detected! 🎯</p>
-                    </div>
+                <div class="terminal-content" id="demoOutput">
+                    $ system ready...
+                    $ click "Start Simulation" to begin deployment flow
                 </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">3</div>
-                    <div class="flow-content">
-                        <strong>GitHub starts BUILD JOB</strong>
-                        <p>Fresh Ubuntu computer starts up...</p>
-                    </div>
-                </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">4</div>
-                    <div class="flow-content">
-                        <strong>Steps run one by one</strong>
-                        <p>✓ Download code ✓ Install Node.js ✓ Build app</p>
-                    </div>
-                </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">5</div>
-                    <div class="flow-content">
-                        <strong>Build succeeds? ✅ YES</strong>
-                        <p>Continue to DEPLOY JOB...</p>
-                    </div>
-                </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">6</div>
-                    <div class="flow-content">
-                        <strong>GitHub connects to YOUR server via SSH</strong>
-                        <p>Special secure connection using SSH key</p>
-                    </div>
-                </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">7</div>
-                    <div class="flow-content">
-                        <strong>Updates your app on server</strong>
-                        <p>✓ Pull code ✓ Install packages ✓ Build ✓ Restart</p>
-                    </div>
-                </div>
-
-                <div class="flow-step">
-                    <div class="flow-number">8</div>
-                    <div class="flow-content">
-                        <strong>🎉 Done! Your app is updated</strong>
-                        <p>Users see the new features!</p>
-                    </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn-primary" style="padding: 10px 25px; font-size: 0.9rem;" onclick="runSimulation()">▶️ Start Simulation</button>
+                    <button class="btn-outline" style="padding: 10px 25px; font-size: 0.9rem; border-color: rgba(255,255,255,0.1);" onclick="clearTerminal()">🔄 Clear</button>
                 </div>
             </div>
-        </div>
-
-        <!-- Section 4: Secrets Explained -->
-        <div class="section">
-            <h2><span class="emoji">🔐</span>Secrets - Keep Passwords Safe</h2>
-
-            <p><strong>What are secrets?</strong> Private information stored safely by GitHub.</p>
-
-            <div class="comparison">
-                <div class="comparison-item wrong">
-                    <h4><span class="emoji">❌</span>BAD - Hard-coded in code</h4>
-                    <div class="code-block warning">
-                        const password = "MyDatabase123";
-                        // Anyone can see this!
-                        // GitHub is public
-                        // Hackers will find it
-                    </div>
-                </div>
-                <div class="comparison-item correct">
-                    <h4><span class="emoji">✅</span>GOOD - Use GitHub Secrets</h4>
-                    <div class="code-block example">
-                        env:
-                        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-                        // In code:
-                        const password = process.env.DB_PASSWORD;
-                        // Safe! No one sees the real value
-                    </div>
-                </div>
-            </div>
-
-            <div class="highlight">
-                <strong>How to set secrets:</strong>
-                <ol>
-                    <li>Go to GitHub repo → Settings</li>
-                    <li>Click "Secrets and variables" → "Actions"</li>
-                    <li>Click "New repository secret"</li>
-                    <li>Enter name and value</li>
-                    <li>Click "Add secret" ✅</li>
-                </ol>
-            </div>
-        </div>
-
-        <!-- Section 5: Interactive Demo -->
-        <div class="section">
-            <h2><span class="emoji">🎮</span>Try It: Simulate a Deployment</h2>
-
-            <p>Click the button to see what happens during deployment:</p>
-
-            <div class="interactive">
-                <button onclick="simulateWorkflow()">▶️ Start Deployment</button>
-                <button onclick="clearOutput()">🔄 Clear Log</button>
-
-                <div class="demo-output" id="demoOutput">
-                    Ready to start... Click "Start Deployment" button ⬆️
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 6: Common Mistakes -->
-        <div class="section">
-            <h2><span class="emoji">⚠️</span>Common Mistakes</h2>
-
-            <div class="comparison">
-                <div class="comparison-item wrong">
-                    <h4>❌ Mistake 1: No Secrets</h4>
-                    <div class="code-block warning">
-                        env:
-                        DATABASE_URL: mongodb://user:pass@localhost
-                        JWT_KEY: super_secret_123
-                        // Passwords exposed!
-                    </div>
-                </div>
-                <div class="comparison-item correct">
-                    <h4>✅ Fix: Use Secrets</h4>
-                    <div class="code-block example">
-                        env:
-                        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-                        JWT_KEY: ${{ secrets.JWT_KEY }}
-                        // Safe!
-                    </div>
-                </div>
-            </div>
-
-            <div class="comparison">
-                <div class="comparison-item wrong">
-                    <h4>❌ Mistake 2: Deploy Before Build</h4>
-                    <div class="code-block warning">
-                        jobs:
-                        build: ...
-                        deploy:
-                        # No 'needs: build'
-                        # Deploy might start before build finishes!
-                    </div>
-                </div>
-                <div class="comparison-item correct">
-                    <h4>✅ Fix: Use Dependency</h4>
-                    <div class="code-block example">
-                        jobs:
-                        build: ...
-                        deploy:
-                        needs: build # Wait for build!
-                        # Now we're safe
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 7: Checklist -->
-        <div class="section">
-            <h2><span class="emoji">✅</span>Before First Deployment</h2>
-
-            <ul class="checklist">
-                <li><input type="checkbox"> GitHub Secrets configured (EC2_HOST, EC2_USER, EC2_SSH_KEY)</li>
-                <li><input type="checkbox"> EC2 instance is running</li>
-                <li><input type="checkbox"> SSH port (22) allowed in security group</li>
-                <li><input type="checkbox"> Node.js installed on EC2 (v20)</li>
-                <li><input type="checkbox"> npm symlinks created (/usr/local/bin/npm)</li>
-                <li><input type="checkbox"> Workflow file at .github/workflows/ci.yml</li>
-                <li><input type="checkbox"> YAML syntax is correct (indentation!)</li>
-                <li><input type="checkbox"> package.json has "build" script</li>
-                <li><input type="checkbox"> dist/index.js exists after build</li>
-                <li><input type="checkbox"> PM2 installed globally</li>
-            </ul>
-        </div>
-
-        <!-- Section 8: FAQ -->
-        <div class="section">
-            <h2><span class="emoji">🤔</span>Frequently Asked Questions</h2>
-
-            <div style="display: grid; gap: 20px; margin-top: 20px;">
-                <div style="border-left: 4px solid #667eea; padding-left: 15px;">
-                    <h4>Q: What if the workflow breaks my app?</h4>
-                    <p>A: You can stop PM2 and rollback instantly. Deploy and rollback takes seconds.</p>
-                </div>
-
-                <div style="border-left: 4px solid #667eea; padding-left: 15px;">
-                    <h4>Q: How often should I deploy?</h4>
-                    <p>A: Every time you push! The automation ensures quality.</p>
-                </div>
-
-                <div style="border-left: 4px solid #667eea; padding-left: 15px;">
-                    <h4>Q: Can I see the logs?</h4>
-                    <p>A: Yes! Go to Actions → Click workflow → See all output.</p>
-                </div>
-
-                <div style="border-left: 4px solid #667eea; padding-left: 15px;">
-                    <h4>Q: Is this secure?</h4>
-                    <p>A: Yes! If you use Secrets correctly (which you should). Passwords never in code.</p>
-                </div>
-
-                <div style="border-left: 4px solid #667eea; padding-left: 15px;">
-                    <h4>Q: What if something fails?</h4>
-                    <p>A: Check the error message in Actions tab. SSH to server and debug manually.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 9: Summary -->
-        <div class="section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-            <h2 style="color: white; border-bottom-color: white;">🎯 Summary</h2>
-
-            <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
-                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                    <h3>🚀 Automation</h3>
-                    <p>GitHub Actions = Robots that do your work</p>
-                </div>
-
-                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                    <h3>🔄 Continuous</h3>
-                    <p>Every push = Automatic test & deploy</p>
-                </div>
-
-                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                    <h3>🔐 Secure</h3>
-                    <p>Secrets keep passwords safe</p>
-                </div>
-
-                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                    <h3>⚡ Fast</h3>
-                    <p>Deploy in minutes, not hours</p>
-                </div>
-
-                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                    <h3>✅ Reliable</h3>
-                    <p>Same steps every time = fewer mistakes</p>
-                </div>
-
-                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                    <h3>💪 Scalable</h3>
-                    <p>Works for small and large projects</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Final Message -->
-        <div class="section">
-            <h2 style="text-align: center;">🌟 You've Got This!</h2>
-            <p style="text-align: center; font-size: 1.1em;">
-                GitHub Actions seems complex at first, but remember:
-            </p>
-            <div class="highlight" style="text-align: center; margin-top: 20px;">
-                <p><strong>When → What → How → Where → Why</strong></p>
-                <p style="margin-top: 10px; font-size: 0.95em;">
-                    <strong>When:</strong> Code pushed to main<br>
-                    <strong>What:</strong> Run these steps<br>
-                    <strong>How:</strong> Using environment variables<br>
-                    <strong>Where:</strong> On GitHub runner, then SSH to server<br>
-                    <strong>Why:</strong> Automate boring work, deploy safely
-                </p>
-            </div>
-
-            <p style="text-align: center; margin-top: 20px; font-size: 1.1em;">
-                Start small, understand each step, then build bigger workflows.
-                <br>
-                <strong>Every expert was once a beginner who didn't give up.</strong>
-            </p>
-        </div>
+        </section>
 
         <footer>
-            <p>🚀 Ready to deploy? You've got all the knowledge you need!</p>
-
+            <div style="margin-bottom: 20px;">
+                <i class="fab fa-github" style="font-size: 2rem;"></i>
+            </div>
+            <p>© 2026 Deployment Essentials • Built for Beginners</p>
         </footer>
     </div>
 
     <script>
-        function simulateWorkflow() {
-            const output = document.getElementById('demoOutput');
-            output.innerHTML = '';
-
-            const steps = [
-                '⏳ Waiting for trigger...',
-                '✅ Code pushed to main branch detected!',
-                '🚀 Starting BUILD job...',
-                '📥 Downloading code from GitHub',
-                '📦 Installing Node.js v20',
-                '📚 Installing npm packages',
-                '🔨 Building TypeScript → JavaScript',
-                '✅ Build successful!',
-                '🚀 Starting DEPLOY job...',
-                '🔐 SSH authentication with EC2',
-                '⬇️ Downloading latest code',
-                '📦 Installing packages',
-                '🔨 Building application',
-                '♻️ Reloading PM2 process',
-                '💾 Saving PM2 state',
-                '✅ SSH connection closed',
-                '🎉 Deployment complete!',
-                '🌐 App updated for users!'
-            ];
-
-            let delay = 0;
-            steps.forEach((step, index) => {
-                setTimeout(() => {
-                    output.innerHTML += step + '\n';
-                    output.scrollTop = output.scrollHeight;
-                }, delay);
-                delay += 400;
-            });
-        }
-
-        function clearOutput() {
-            document.getElementById('demoOutput').innerHTML = 'Log cleared... Ready for new deployment simulation!';
-        }
-
-        // Add click handlers to checkboxes
-        document.querySelectorAll('.checklist input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                if (this.checked) {
-                    this.parentElement.style.opacity = '0.6';
-                    this.parentElement.style.textDecoration = 'line-through';
-                } else {
-                    this.parentElement.style.opacity = '1';
-                    this.parentElement.style.textDecoration = 'none';
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
             });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.guide-section').forEach(s => observer.observe(s));
+
+        // Progress bar logic
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
         });
+
+        // Simulation Logic
+        async function runSimulation() {
+            const output = document.getElementById('demoOutput');
+            const status = document.querySelector('.terminal-header span:last-child');
+            const btn = document.querySelector('[onclick="runSimulation()"]');
+            
+            btn.disabled = true;
+            output.innerHTML = '';
+            status.innerText = 'Status: RUNNING';
+            status.style.color = 'var(--info)';
+
+            const lines = [
+                { text: '⏳ Connecting to GitHub API...', color: '#94a3b8' },
+                { text: '✅ Push event detected on branch [main]', color: 'var(--success)' },
+                { text: '🚀 Requesting Ubuntu Runner...', color: 'var(--info)' },
+                { text: '📦 Runner active: ip-172-31-45-12', color: '#fff' },
+                { text: '--- Starting Job: Build ---', color: '#64748b' },
+                { text: '📥 actions/checkout@v4: Download complete', color: '#fff' },
+                { text: '📦 actions/setup-node@v4: Node.js v20.10.0 ready', color: '#fff' },
+                { text: '⚙️ Running: npm ci', color: '#fff' },
+                { text: '🔨 Running: npm run build', color: '#fff' },
+                { text: '✅ Build artifacts created in /dist', color: 'var(--success)' },
+                { text: '--- Starting Job: Deploy ---', color: '#64748b' },
+                { text: '🔐 Opening SSH Tunnel to EC2...', color: 'var(--info)' },
+                { text: '📡 Executing remote script...', color: '#fff' },
+                { text: '   $ git pull origin main [Done]', color: '#94a3b8' },
+                { text: '   $ pm2 reload backend [Done]', color: '#94a3b8' },
+                { text: '🎉 DEPLOYMENT SUCCESSFUL!', color: 'var(--success)' },
+                { text: '🌐 App is now live at https://production-app.com', color: 'var(--info)' }
+            ];
+
+            for (const line of lines) {
+                const el = document.createElement('div');
+                el.style.color = line.color;
+                el.innerText = line.text;
+                output.appendChild(el);
+                output.scrollTop = output.scrollHeight;
+                await new Promise(r => setTimeout(r, 600));
+            }
+
+            status.innerText = 'Status: SUCCESS';
+            status.style.color = 'var(--success)';
+            btn.disabled = false;
+
+            Swal.fire({
+                title: 'Deployment Complete!',
+                text: 'Your simulated app is now live in production.',
+                icon: 'success',
+                background: '#1e293b',
+                color: '#fff',
+                confirmButtonColor: '#667eea'
+            });
+        }
+
+        function clearTerminal() {
+            document.getElementById('demoOutput').innerHTML = '$ system ready...\n$ click "Start Simulation" to begin deployment flow';
+            const status = document.querySelector('.terminal-header span:last-child');
+            status.innerText = 'Status: Ready';
+            status.style.color = '#43e97b';
+        }
     </script>
 </body>
-
 </html>

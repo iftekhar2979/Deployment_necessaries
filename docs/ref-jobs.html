@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reference: GitHub Actions Jobs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --info: #4facfe;
+            --dark: #0f172a;
+            --code-bg: #011627;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--dark);
+            color: #f1f5f9;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .nav-back {
+            display: inline-flex;
+            align-items: center; gap: 10px;
+            color: var(--info); text-decoration: none;
+            margin-bottom: 30px; font-weight: bold;
+        }
+        h1 { font-size: 2.5rem; color: #fff; margin-bottom: 20px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        .ref-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 20px; padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        .code-window {
+            background: var(--code-bg); border-radius: 12px;
+            padding: 20px; font-family: 'Fira Code', monospace;
+            font-size: 0.9rem; overflow-x: auto;
+        }
+        .yaml-key { color: #ff7b72; }
+        .yaml-val { color: #a5d6ff; }
+        .tag {
+            display: inline-block; background: var(--primary);
+            padding: 4px 12px; border-radius: 15px;
+            font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="beginner-guide.html" class="nav-back"><i class="fas fa-arrow-left"></i> Back to Guide</a>
+        <h1><i class="fas fa-tasks"></i> Jobs & Dependencies</h1>
+        
+        <div class="ref-card">
+            <span class="tag">Needs</span>
+            <h3>Job Dependencies</h3>
+            <p>Use <code>needs</code> to ensure one job waits for another to finish successfully.</p>
+            <div class="code-window">
+                <span class="yaml-key">jobs</span>:<br>
+                &nbsp;&nbsp;<span class="yaml-key">build</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-key">runs-on</span>: <span class="yaml-val">ubuntu-latest</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;...<br><br>
+                &nbsp;&nbsp;<span class="yaml-key">deploy</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-key">needs</span>: <span class="yaml-val">build</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-key">runs-on</span>: <span class="yaml-val">ubuntu-latest</span>
+            </div>
+        </div>
+
+        <div class="ref-card">
+            <span class="tag">Matrix</span>
+            <h3>Build Matrix</h3>
+            <p>Run your jobs across multiple versions of languages or operating systems at once.</p>
+            <div class="code-window">
+                <span class="yaml-key">strategy</span>:<br>
+                &nbsp;&nbsp;<span class="yaml-key">matrix</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-key">os</span>: [<span class="yaml-val">ubuntu-latest</span>, <span class="yaml-val">windows-latest</span>]<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-key">node-version</span>: [<span class="yaml-val">18</span>, <span class="yaml-val">20</span>, <span class="yaml-val">22</span>]
+            </div>
+        </div>
+
+        <div class="ref-card">
+            <span class="tag">Flow</span>
+            <h3>Conditional Execution</h3>
+            <p>Control when jobs or steps run using <code>if</code> statements.</p>
+            <div class="code-window">
+                <span class="yaml-key">if</span>: <span class="yaml-val">github.ref == 'refs/heads/main'</span><br>
+                <span class="yaml-key">if</span>: <span class="yaml-val">failure()</span> <span class="yaml-comment"># Only if previous job failed</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
