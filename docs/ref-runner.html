@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reference: GitHub Actions Runner & Structure</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --info: #4facfe;
+            --dark: #0f172a;
+            --code-bg: #011627;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--dark);
+            color: #f1f5f9;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .nav-back {
+            display: inline-flex;
+            align-items: center; gap: 10px;
+            color: var(--info); text-decoration: none;
+            margin-bottom: 30px; font-weight: bold;
+        }
+        h1 { font-size: 2.5rem; color: #fff; margin-bottom: 20px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        .ref-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 20px; padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        .code-window {
+            background: var(--code-bg); border-radius: 12px;
+            padding: 20px; font-family: 'Fira Code', monospace;
+            font-size: 0.9rem; overflow-x: auto;
+        }
+        .yaml-key { color: #ff7b72; }
+        .yaml-val { color: #a5d6ff; }
+        .tag {
+            display: inline-block; background: var(--primary);
+            padding: 4px 12px; border-radius: 15px;
+            font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="beginner-guide.html" class="nav-back"><i class="fas fa-arrow-left"></i> Back to Guide</a>
+        <h1><i class="fas fa-laptop-code"></i> Runner & Structure</h1>
+        
+        <div class="ref-card">
+            <span class="tag">System</span>
+            <h3>Operating Systems</h3>
+            <p>Define which OS the runner should use with <code>runs-on</code>.</p>
+            <div class="code-window">
+                <span class="yaml-key">runs-on</span>: <span class="yaml-val">ubuntu-latest</span> <span class="yaml-comment"># Most Common</span><br>
+                <span class="yaml-key">runs-on</span>: <span class="yaml-val">windows-latest</span><br>
+                <span class="yaml-key">runs-on</span>: <span class="yaml-val">macos-latest</span>
+            </div>
+        </div>
+
+        <div class="ref-card">
+            <span class="tag">Basic</span>
+            <h3>Full Basic Template</h3>
+            <p>Every workflow file should follow this structural pattern.</p>
+            <div class="code-window">
+                <span class="yaml-key">name</span>: <span class="yaml-val">My Workflow</span><br><br>
+                <span class="yaml-key">on</span>: [<span class="yaml-val">push</span>]<br><br>
+                <span class="yaml-key">jobs</span>:<br>
+                &nbsp;&nbsp;<span class="yaml-key">build</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-key">runs-on</span>: <span class="yaml-val">ubuntu-latest</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-key">steps</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="yaml-key">run</span>: <span class="yaml-val">echo "Hello World"</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
