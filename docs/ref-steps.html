@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reference: GitHub Actions Steps & Commands</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --info: #4facfe;
+            --dark: #0f172a;
+            --code-bg: #011627;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--dark);
+            color: #f1f5f9;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .nav-back {
+            display: inline-flex;
+            align-items: center; gap: 10px;
+            color: var(--info); text-decoration: none;
+            margin-bottom: 30px; font-weight: bold;
+        }
+        h1 { font-size: 2.5rem; color: #fff; margin-bottom: 20px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        .ref-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 20px; padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        .code-window {
+            background: var(--code-bg); border-radius: 12px;
+            padding: 20px; font-family: 'Fira Code', monospace;
+            font-size: 0.9rem; overflow-x: auto;
+        }
+        .yaml-key { color: #ff7b72; }
+        .yaml-val { color: #a5d6ff; }
+        .tag {
+            display: inline-block; background: var(--primary);
+            padding: 4px 12px; border-radius: 15px;
+            font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="beginner-guide.html" class="nav-back"><i class="fas fa-arrow-left"></i> Back to Guide</a>
+        <h1><i class="fas fa-shoe-prints"></i> Steps & Commands</h1>
+        
+        <div class="ref-card">
+            <span class="tag">Run</span>
+            <h3>Running Commands</h3>
+            <p>Use the <code>run</code> key to execute shell commands.</p>
+            <div class="code-window">
+                <span class="yaml-comment"># Single command</span><br>
+                <span class="yaml-key">- run</span>: <span class="yaml-val">npm install</span><br><br>
+                <span class="yaml-comment"># Multiple commands (use the pipe '|')</span><br>
+                <span class="yaml-key">- run</span>: |<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-val">npm install</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-val">npm run build</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-val">npm test</span>
+            </div>
+        </div>
+
+        <div class="ref-card">
+            <span class="tag">Env</span>
+            <h3>Steps with Env Variables</h3>
+            <p>You can pass environment variables to individual steps.</p>
+            <div class="code-window">
+                <span class="yaml-key">- run</span>: <span class="yaml-val">npm run build</span><br>
+                &nbsp;&nbsp;<span class="yaml-key">env</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="yaml-key">NODE_ENV</span>: <span class="yaml-val">production</span>
+            </div>
+        </div>
+
+        <div class="ref-card">
+            <span class="tag">Context</span>
+            <h3>Built-in Variables</h3>
+            <p>GitHub provides useful information about the run.</p>
+            <ul>
+                <li><code>${{ github.repository }}</code> - owner/repo</li>
+                <li><code>${{ github.ref }}</code> - branch name</li>
+                <li><code>${{ github.actor }}</code> - who started it</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
